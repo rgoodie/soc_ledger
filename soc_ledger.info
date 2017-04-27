@@ -1,5 +1,5 @@
 name = SoC Ledger
-description = Ledger and Conversion Scales
+description = Drupal 7 module system to create a simple ledger system to track deposits and withdrawals, see individual user-specific ledgers, and whole-group ledgers.
 package = SoC
 core = 7.x
 
