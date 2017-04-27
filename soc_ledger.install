@@ -1,0 +1,36 @@
+<?php
+
+
+function soc_ledger_schema()
+{
+    $schema['soc_ledger_activities'] = array(
+
+        'description' => 'The base table for nodes.',
+        'fields' => array(
+            'activity_id' => array(
+                'description' => 'The primary identifier for a node.',
+                'type' => 'serial',
+                'unsigned' => TRUE,
+                'not null' => TRUE,
+            ),
+            'uid' => array(
+                'type'=>'numeric'
+            ),
+            'datetime' => array(
+                'type' => 'numeric',
+            ),
+            'rate' => array(
+                'type' => 'numeric',
+            ),
+            'name' => array(
+                'description' => 'The title of this node, always treated as non-markup plain text.',
+                'type' => 'varchar',
+                'length' => 255,
+                'not null' => TRUE,
+                'default' => '',
+            ),
+        ),
+        'primary key' => array('activity_id'),
+    );
+    return $schema;
+}

@@ -1,0 +1,117 @@
+<?php
+
+define('SOC_LEDGER_NAME', 'soc_ledger');
+define('SOC_LEDGER_DEFAULT_DATE', 'D Y-m-d h:i:s a');
+
+/**
+ * Implements hook_menu().
+ */
+function soc_ledger_menu()
+{
+    // admin console
+    $items['soc/ledger/configure'] = array(
+        'title' => t('Ledger Administration Console'),
+        'page callback' => 'drupal_get_form',
+        'page arguments' => array('soc_ledger_admin_form'),
+        'access arguments' => array('administer ledger'),
+        'file' => 'soc_ledger.admin.inc',
+        'type' => MENU_CALLBACK
+    );
+
+    // ledger view (all)
+    $items['soc/ledger/report'] = array(
+        'title'=>t('Ledger Report'),
+        'page callback'=>'soc_ledger_showLedger',
+        'access arguments' => array('administer ledger'),
+        'file'=>'soc_ledger.ledger.inc',
+        'menu_name'=>'main-menu',
+        'type'=>MENU_NORMAL_ITEM
+    );
+    //$items['soc/ledger/ledger'] = $items['soc/ledger/report'];
+
+    // my ledger
+    $items['soc/lodger/myledger'] = array(
+        'title'=>t('My Ledger'),
+        'page callback'=>'_soc_ledger_my_ledger',
+        'access arguments'=>array('see my ledger'),
+        'type'=>MENU_NORMAL_ITEM,
+        'menu_name'=>'main-menu',
+    );
+
+    // ledger view (single users)
+    $items['soc/ledger/report/%'] = array(
+        'title'=>t('Ledger Report'),
+        'page callback'=>'soc_ledger_showLedger_for_user',
+        'page arguments'=>array(3),
+        'access arguments' => array('administer ledger'),
+        'file'=>'soc_ledger.ledger.inc',
+        'type'=>MENU_CALLBACK
+    );
+
+    // deposit form
+    $items['soc/ledger/deposit'] = array(
+        'title' => t('Record Deposit'),
+        'page callback' => 'drupal_get_form',
+        'page arguments' => array('soc_ledger_deposit_form'),
+        'access arguments' => array('record deposit'),
+        'file' => 'soc_ledger.deposit.inc',
+        'menu_name'=>'main-menu',
+        'type' => MENU_NORMAL_ITEM
+    );
+
+
+    // withdrawal form
+    $items['soc/ledger/withdrawal'] = array(
+        'title' => t('Record Withdrawal'),
+        'page callback' => 'drupal_get_form',
+        'page arguments' => array('soc_ledger_withdrawal_form'),
+        'access arguments' => array('record deposit'),
+        'file' => 'soc_ledger.withdrawal.inc',
+        'menu_name'=>'main-menu',
+        'type' => MENU_NORMAL_ITEM
+    );
+
+
+    // delete line
+    $items['soc/ledger/delete/%'] = array(
+        'title' => t('Delete entry '),
+        'page callback' => 'drupal_get_form',
+        'page arguments' => array('soc_ledger_delete_form', 3),
+        'access arguments' => array('administer ledger'),
+        'file' => 'soc_ledger.operations.inc',
+        'type' => MENU_CALLBACK
+    );
+
+
+    return $items;
+}
+
+// jump point for MY ledger
+function _soc_ledger_my_ledger() {
+
+    module_load_include('inc', 'soc_ledger', 'soc_ledger.ledger');
+    global $user;
+    return soc_ledger_showLedger_for_user($user->uid, 100);
+}
+
+
+/**
+ * Implements hook_permission().
+ */
+function soc_ledger_permission()
+{
+    return array(
+        'administer ledger' => array(
+            'title' => t('Administer Ledger'),
+            'description' => t('Perform administration tasks for the Ledger Module.'),
+        ),
+        'record deposit' => array(
+            'title' => t('Record a deposit'),
+            'description' => t('Record a deposit.'),
+        ),
+        'see my ledger'=> array(
+            'title'=>t('See my ledger'),
+            'description'=>t('See your own account'),
+        ),
+    );
+}

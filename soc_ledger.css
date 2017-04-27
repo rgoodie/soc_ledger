@@ -1,0 +1,5 @@
+.soc_ledger_max_height_20 {
+    max-height: 250px;
+    overflow: scroll;
+    border: 1px solid red;
+}

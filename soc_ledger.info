@@ -1,0 +1,12 @@
+name = SoC Ledger
+description = Ledger and Conversion Scales
+package = SoC
+core = 7.x
+
+
+
+configure=soc/ledger/configure
+
+files[]=LedgerActivity.class.inc
+
+stylesheets[all][]=soc_ledger.css
