@@ -10,12 +10,13 @@ function soc_ledger_menu()
 {
     // admin console
     $items['soc/ledger/configure'] = array(
-        'title' => t('Ledger Administration Console'),
+        'title' => t('Ledger Settings'),
         'page callback' => 'drupal_get_form',
         'page arguments' => array('soc_ledger_admin_form'),
         'access arguments' => array('administer ledger'),
         'file' => 'soc_ledger.admin.inc',
-        'type' => MENU_CALLBACK
+        'type' => MENU_NORMAL_ITEM,
+				'menu_name'=>'main-menu',
     );
 
     // ledger view (all)

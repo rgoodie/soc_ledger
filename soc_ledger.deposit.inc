@@ -19,7 +19,14 @@ function soc_ledger_deposit_form($form, &$form_state) {
 			'#type' => 'select',
 			'#options' => $ledger_options,
 			'#title' => t('Select activity'),
+		);
 
+		$form['quantity'] = array(
+			'#title' => t(variable_get('soc_ledger_count_label', 'Quantity?')),
+			'#description' => t('How many times did you complete this today?'),
+			'#type' => 'textfield',
+			'#default' => 1,
+			'#element_validate' => array('_soc_ledger_validate_quantity'),
 		);
 
 		$form['add'] = array(
@@ -35,8 +42,9 @@ function soc_ledger_deposit_form($form, &$form_state) {
 	else {
 
 		$action = sprintf(
-			"Please confirm the  of <em>%s</em>",
-			$ledger_options[$form_state['storage']['original_form']['activity']]
+			"Please confirm the  of <em>%s</em> for <em>%d</em> times",
+			$ledger_options[$form_state['storage']['original_form']['activity']],
+			$form_state['storage']['original_form']['quantity']
 		);
 		return confirm_form(
 			array(),
@@ -49,6 +57,26 @@ function soc_ledger_deposit_form($form, &$form_state) {
 
 }
 
+
+function _soc_ledger_validate_quantity($element, &$form_state) {
+
+	// numeric
+	if (!is_numeric($element['#value'])) {
+		form_error($element, t('Item must be numeric'));
+	}
+
+	// positive
+	if (!is_numeric($element['#value'])) {
+		form_error($element, t('Number must be positive'));
+	}
+
+	// Not beyond max number set
+	if ($element['#value'] > variable_get('soc_ledger_max_number', 1)) {
+		form_error($element, t("Maximum count should only be @number", array(
+			'@number' => variable_get('soc_ledger_max_number', 1),
+		)));
+	}
+}
 
 function soc_ledger_deposit_form_submit($form, &$form_state) {
 
@@ -65,10 +93,11 @@ function soc_ledger_deposit_form_submit($form, &$form_state) {
 	}
 	else {
 
+		$quantity = $form_state['storage']['original_form']['quantity'];
 		$selected = $form_state['storage']['original_form']['activity'];
 		watchdog(SOC_LEDGER_NAME, 'Selected @i', array('@i' => $selected));
 		$data = LedgerActivity::getSpecificActivityAndRate($selected);
-		LedgerActivity::recordIndividualActivity($uid, $data['name'], $data['rate']);
+		LedgerActivity::recordIndividualActivity($uid, $data['name'], $data['rate'], $quantity);
 	}
 
 
