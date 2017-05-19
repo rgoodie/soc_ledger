@@ -86,7 +86,7 @@ function soc_ledger_admin_form($form, &$form_state) {
 function _soc_ledger_settings_no_dollar_sign($element, &$form_state) {
 
 	if (strpos($element['#value'], '$')) {
-		form_error($element, t("Please don't include a dollar sign ($). This causes issues down the road. "));
+		form_error($element, t('Please don\'t include a dollar sign. This causes issues down the road. '));
 	}
 }
 

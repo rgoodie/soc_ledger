@@ -104,20 +104,20 @@ function soc_ledger_withdrawal_form_submit($form, &$form_state) {
 
 function soc_ledger_validate_withdrawal_nane($element, &$form_state, $form) {
 	if (empty($element['#value'])) {
-		form_error($element, t($element['#title'] . ': This field is required.'));
+		form_error($element, t("This field is required."));
 	}
 }
 
 function soc_ledger_validate_withdrawal_value($element, &$form_state, $form) {
 	if (empty($element['#value'])) {
-		form_error($element, t($element['#title'] . ': This field is required.'));
+		form_error($element, t(' This field is required.'));
 	}
 	if (!is_numeric($element['#value'])) {
-		form_error($element, t($element['#title'] . ': Must be numeric'));
+		form_error($element, t('Must be numeric'));
 	}
 	// must be positive
 	if ($element['#value'] < 1) {
-		form_error($element, t($element['#title'] . ': Can\'t be negative number '));
+		form_error($element, t('Can\'t be negative number '));
 	}
 }
 
