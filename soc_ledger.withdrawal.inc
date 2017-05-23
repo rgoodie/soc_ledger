@@ -26,14 +26,18 @@ function soc_ledger_withdrawal_form($form, &$form_state) {
 			'#title' => t('Activity Name'),
 			'#description' => t('Please give a descriptive '),
 			'#maxlength' => 255,
-			'#element_validate' => array('soc_ledger_validate_withdrawal_nane'),
+			'#element_validate' => array('_soc_ledger_validate_withdrawal_notnull'),
 		);
 		$form['activity_fs']['wd_activity_value'] = array(
 			'#type' => 'textfield',
 			'#title' => t('Activity Value'),
-			'#description' => t('Please give a descriptive '),
 			'#maxlength' => 255,
 			'#element_validate' => array('soc_ledger_validate_withdrawal_value'),
+		);
+		$form['activity_fs']['assertion'] = array(
+			'#type'=>'checkbox',
+			'#title'=>t('Yes, I assert that I have handed in all necessary paper work.'),
+			'#element_validate' => array('_soc_ledger_validate_withdrawal_notnull'),
 		);
 
 		$form['wd_submit'] = array(
@@ -78,6 +82,7 @@ function soc_ledger_withdrawal_form_submit($form, &$form_state) {
 		$name = $form_state['storage']['original_form']['wd_activity_name'];
 		$value = $form_state['storage']['original_form']['wd_activity_value'];
 		$category = $form_state['storage']['original_form']['wd_category'];
+		$assertion = $form_state['storage']['original_form']['assertion'];
 
 		// combine category and name
 		$combined_name = sprintf(
@@ -94,7 +99,7 @@ function soc_ledger_withdrawal_form_submit($form, &$form_state) {
 			$combined_name
 		);
 		watchdog(SOC_LEDGER_NAME, $msg);
-		LedgerActivity::recordIndividualActivity($user->uid, $combined_name, $value * -1, 1);
+		LedgerActivity::recordIndividualActivity($user->uid, $combined_name, $value * -1, 1,$assertion );
 
 	}
 
@@ -102,7 +107,7 @@ function soc_ledger_withdrawal_form_submit($form, &$form_state) {
 }
 
 
-function soc_ledger_validate_withdrawal_nane($element, &$form_state, $form) {
+function _soc_ledger_validate_withdrawal_notnull($element, &$form_state, $form) {
 	if (empty($element['#value'])) {
 		form_error($element, t("This field is required."));
 	}

@@ -22,16 +22,16 @@ class LedgerActivity {
 		return explode(PHP_EOL, trim(variable_get('soc_ledger_activities')));
 	}
 
-	static function getAllWithdrawalCategories() {
-		return explode(PHP_EOL, trim(variable_get('soc_ledger_withdrawal_categories')));
-	}
-
 	static function getSingleWithdrawalCategory($index) {
 		$categories = self::getAllWithdrawalCategories();
 		return trim($categories[$index]);
 	}
 
-	static public function recordIndividualActivity($uid, $name, $rate, $quantity) {
+	static function getAllWithdrawalCategories() {
+		return explode(PHP_EOL, trim(variable_get('soc_ledger_withdrawal_categories')));
+	}
+
+	static public function recordIndividualActivity($uid, $name, $rate, $quantity, $assertion) {
 
 		// Create record. Combine the name as name x quantity. Rate is multiplied
 		// by quantity.
@@ -40,16 +40,20 @@ class LedgerActivity {
 			'name' => sprintf("%s x %d", $name, $quantity),
 			'rate' => $rate * $quantity,
 			'datetime' => time(),
+			'assertion' => $assertion,
 		);
+
+		watchdog(__FUNCTION__, print_r($assertion));
 
 		// Write record
 		$result = drupal_write_record('soc_ledger_activities', $record);
 
 		// log everything
-		watchdog(SOC_LEDGER_NAME, "Recording :uid, :name, :rate", array(
+		watchdog(SOC_LEDGER_NAME, "Recording :uid, :name, :rate, :assertion", array(
 			':uid' => $uid,
 			':name' => $record['name'],
 			':rate' => $record['rate'],
+			':assertion' => $record['assertion'],
 		));
 
 		// Return a result
@@ -109,9 +113,10 @@ class LedgerActivity {
 
 				'Transaction ID' => $row['activity_id'],
 				'Person' => $user_link,
-				'Activity_Name' => $row['name'],
+				'Activity Name' => $row['name'],
 				'Rate' => number_format($row['rate'], 2),
 				'Date/Time' => date('D Y-m-d h:i:s a', $row['datetime']),
+				'Assertion' => $row['assertion'],
 				'Delete' => (user_access('administer ledger')) ? l('Detete', "soc/ledger/delete/" . $row['activity_id']) : '',
 			);
 		}
@@ -119,7 +124,7 @@ class LedgerActivity {
 		// Table Array
 		$output = array(
 			'#theme' => 'table',
-			'#header' => array_keys($to_return[0]),
+			'#header' => @array_keys($to_return[0]),
 			'#rows' => $to_return,
 			'#attributes' => array(
 				'class' => array(
@@ -137,8 +142,7 @@ class LedgerActivity {
 				"",
 				t('<b>Current Total:</b>'),
 				number_format($sum, 2),
-				'',
-				'',
+				'','','','',
 			);
 		}
 
@@ -156,8 +160,7 @@ class LedgerActivity {
 			return $output;
 		}
 
-
+		return 'No data';
 	}
-
-
 }
+

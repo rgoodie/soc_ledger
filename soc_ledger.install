@@ -1,36 +1,80 @@
 <?php
 
 
-function soc_ledger_schema()
-{
-    $schema['soc_ledger_activities'] = array(
+function soc_ledger_schema() {
+	$schema['soc_ledger_activities'] = array(
 
-        'description' => 'The base table for nodes.',
-        'fields' => array(
-            'activity_id' => array(
-                'description' => 'The primary identifier for a node.',
-                'type' => 'serial',
-                'unsigned' => TRUE,
-                'not null' => TRUE,
-            ),
-            'uid' => array(
-                'type'=>'numeric'
-            ),
-            'datetime' => array(
-                'type' => 'numeric',
-            ),
-            'rate' => array(
-                'type' => 'numeric',
-            ),
-            'name' => array(
-                'description' => 'The title of this node, always treated as non-markup plain text.',
-                'type' => 'varchar',
-                'length' => 255,
-                'not null' => TRUE,
-                'default' => '',
-            ),
-        ),
-        'primary key' => array('activity_id'),
-    );
-    return $schema;
+		'description' => 'The base table for nodes.',
+		'fields' => array(
+			'activity_id' => array(
+				'description' => 'The primary identifier for a node.',
+				'type' => 'serial',
+				'unsigned' => TRUE,
+				'not null' => TRUE,
+			),
+			'uid' => array(
+				'type' => 'numeric',
+			),
+			'datetime' => array(
+				'type' => 'numeric',
+			),
+			'rate' => array(
+				'type' => 'numeric',
+			),
+			'assertion' => array(
+				'type' => 'numeric',
+			),
+			'approval' => array(
+				'type' => 'numeric',
+			),
+			'status' => array(
+				'type' => 'numeric',
+			),
+			'name' => array(
+				'description' => 'The title of this node, always treated as non-markup plain text.',
+				'type' => 'varchar',
+				'length' => 255,
+				'not null' => TRUE,
+				'default' => '',
+			),
+		),
+		'primary key' => array('activity_id'),
+	);
+	return $schema;
 }
+
+
+/**
+ * Add assertion field to {soc_ledger_activities} table.
+ * Add approval field to {soc_ledger_activities} table.
+ * Add status field to {soc_ledger_activities} table.
+ */
+/*function soc_ledger_update_7104() {
+
+	// Delete fields if exists. Using loop to stay consistent.
+	foreach (array('assertion', 'approval', 'status') as $column) {
+		if (db_field_exists('soc_ledger_activities', $column)) {
+			db_drop_field('soc_ledger_activities', $column);
+		}
+	}
+
+	// Add each field in
+	db_add_field('soc_ledger_activities', 'assertion', array(
+		'type' => 'varchar',
+		'length'=>2,
+		'description' => "Assertion of turned in materials",
+		'not null' => TRUE,
+	));
+	db_add_field('soc_ledger_activities', 'approval', array(
+		'type' => 'varchar',
+		'length'=>2,
+		'description' => "Approval of staff",
+	));
+	db_add_field('soc_ledger_activities', 'status', array(
+		'type' => 'varchar',
+		'length' => 45,
+		'description' => "Optional status descriptor",
+	));
+}
+*/
+

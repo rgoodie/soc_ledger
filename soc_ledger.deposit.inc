@@ -29,6 +29,13 @@ function soc_ledger_deposit_form($form, &$form_state) {
 			'#element_validate' => array('_soc_ledger_validate_quantity'),
 		);
 
+		$form['assertion'] = array(
+			'#type'=>'checkbox',
+			'#title'=>t('Yes, I assert that I have handed in all necessary paper work.'),
+			'#element_validate'=>array('_soc_ledger_validate_assertion')
+		);
+
+		// submit
 		$form['add'] = array(
 			'#type' => 'submit',
 			'#value' => 'Record',
@@ -66,8 +73,8 @@ function _soc_ledger_validate_quantity($element, &$form_state) {
 	}
 
 	// positive
-	if (!is_numeric($element['#value'])) {
-		form_error($element, t('Number must be positive'));
+	if ($element['#value'] < 1 ) {
+		form_error($element, t('Number must greater than zero.'));
 	}
 
 	// Not beyond max number set
@@ -76,7 +83,18 @@ function _soc_ledger_validate_quantity($element, &$form_state) {
 			'@number' => variable_get('soc_ledger_max_number', 1),
 		)));
 	}
+
+
 }
+
+
+
+function _soc_ledger_validate_assertion($element, &$form_state) {
+	if ($element['#value'] == 0) {
+		form_error($element, 'You must assert that you\'ve handed in necessary materials');
+	}
+}
+
 
 function soc_ledger_deposit_form_submit($form, &$form_state) {
 
@@ -97,9 +115,13 @@ function soc_ledger_deposit_form_submit($form, &$form_state) {
 		$selected = $form_state['storage']['original_form']['activity'];
 		watchdog(SOC_LEDGER_NAME, 'Selected @i', array('@i' => $selected));
 		$data = LedgerActivity::getSpecificActivityAndRate($selected);
-		LedgerActivity::recordIndividualActivity($uid, $data['name'], $data['rate'], $quantity);
+		$assertion = $form_state['storage']['original_form']['assertion'];
+
+		// Finally record it
+		LedgerActivity::recordIndividualActivity($uid, $data['name'], $data['rate'], $quantity, $assertion);
 	}
 
 
 }
+
 
