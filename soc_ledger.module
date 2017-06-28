@@ -37,7 +37,7 @@ function soc_ledger_menu() {
 
 	// my ledger
 	$items['soc/lodger/myledger'] = array(
-		'title' => 'My Ledger',
+		'title' => 'My Research Account',
 		'page callback' => '_soc_ledger_my_ledger',
 		'access arguments' => array('see my ledger'),
 		'type' => MENU_NORMAL_ITEM,
@@ -46,7 +46,7 @@ function soc_ledger_menu() {
 
 	// ledger view (single users)
 	$items['soc/ledger/report/%'] = array(
-		'title' => 'My Research Account',
+		'title' => 'Ledger Report',
 		'page callback' => 'soc_ledger_showLedger_for_user',
 		'page arguments' => array(3),
 		'access arguments' => array('administer ledger'),
