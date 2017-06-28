@@ -69,6 +69,16 @@ function soc_ledger_admin_form($form, &$form_state) {
 		'#required' => TRUE,
 
 	);
+	
+	
+	$form['soc_ledger_deposit_checkbox_text'] = array(
+		'#type'=> 'textarea',
+		'#title'=>t('Deposit Assertion checkbox text'),
+		'#default_value'=>variable_get('soc_ledger_deposit_checkbox_text', 'I have handed in all information'),
+		'#required'=> TRUE,
+		'#maxlength'=>250,
+		'#size'=> 60,
+	);
 
 
 	return system_settings_form($form);

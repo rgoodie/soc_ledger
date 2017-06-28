@@ -39,7 +39,7 @@ function soc_ledger_deposit_form($form, &$form_state) {
 	
 	$form['assertion'] = array(
 		'#type' => 'checkbox',
-		'#title' => t('Yes, I assert that I have handed in all necessary paper work.'),
+		'#title' => t(variable_get('soc_ledger_deposit_checkbox_text', 'I have handed in all information')),
 		'#element_validate' => array('_soc_ledger_validate_assertion'),
 	);
 	
